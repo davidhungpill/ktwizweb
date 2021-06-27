@@ -1,17 +1,24 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-      <router-view v-if="!isMobile" />
-      <router-view v-else name="mobile" />
-    </div>
+    <Header />
+    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <Footer />
   </div>
 </template>
 
 <script>
+import Header from "./components/common/header"; //import 헤더 추가
+import HelloWorld from "./components/HelloWorld.vue";
+import Footer from "./components/common/footer"; //import 풋터 추가
+
 export default {
   name: "App",
+  components: {
+    Header,
+    HelloWorld,
+    Footer,
+  },
+
   data: () => ({
     isMobile: false,
   }),
