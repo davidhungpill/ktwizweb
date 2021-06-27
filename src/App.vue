@@ -4,6 +4,7 @@
     <HelloWorld msg="Welcome to Your Vue.js App" />
     <Footer />
   </div>
+  {{ phase }}
 </template>
 
 <script>
@@ -23,6 +24,10 @@ export default {
     isMobile: false,
   }),
 
+  created() {
+    console.log(process.env);
+  },
+
   beforeUnmount() {
     if (typeof window !== "undefined") {
       window.removeEventListener("resize", this.onResize, { passive: true });
@@ -30,6 +35,7 @@ export default {
   },
 
   mounted() {
+    this.phase = process.env.VUE_APP_PHASE;
     this.onResize();
     window.addEventListener("resize", this.onResize, { passive: true });
   },
