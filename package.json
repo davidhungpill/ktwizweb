@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "local": "vue-cli-service serve --mode local",
-    "dev": "vue-cli-service serve --mode dev",
-    "prd": "vue-cli-service serve --mode prd",
+    "dev-serve": "vue-cli-service serve --mode dev",
+    "prd-serve": "vue-cli-service serve --mode prd",
     "build": "vue-cli-service build",
+    "dev-build": "vue-cli-service build --mode dev",
+    "prd-build": "vue-cli-service build --mode prd",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint"
