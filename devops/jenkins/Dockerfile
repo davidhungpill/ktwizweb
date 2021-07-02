@@ -1,4 +1,4 @@
-FROM ktis-bastion01.container.ipc.kt.com:5000/admin/nginx:stable-alpine
+FROM nginx:stable
 
 ENV TZ Asia/Seoul
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone 
