@@ -132,7 +132,8 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   serviceName: ktwizweb
   hosts:
-    - host: ktwiz.web.ktds.amazonaws.com
+    - host: ec2-3-36-248-102.ap-northeast-2.compute.amazonaws.com
+    # ktwiz.web.ktds.amazonaws.com
       paths: 
         - /
   tls: []
