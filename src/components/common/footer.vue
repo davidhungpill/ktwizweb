@@ -10,10 +10,13 @@ export default {};
 
 <style>
 footer {
-  border-top: 1px solid black;
+  border-top: 1px solid #111;
   text-align: center;
   font-size: 16px;
   color: black;
-  margin: 100px 0 0 0;
+  padding: 10px;
+}
+footer p {
+  color: #fff;
 }
 </style>

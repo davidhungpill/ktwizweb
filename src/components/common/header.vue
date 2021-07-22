@@ -2,52 +2,55 @@
   <header>
     <h1>
       <a href="#" class="logo"
-        ><img alt="KT Wiz" src="../../assets/logo.png"
+        ><img alt="KT Wiz" src="../../assets/logo_w.png"
       /></a>
+      <span class="title">"AI를 지켜라" 이벤트</span>
     </h1>
-    <div class="menuWrap">
-      <ul class="menu">
-        <li>참여</li>
-        <li>결과</li>
-      </ul>
-    </div>
   </header>
 </template>
 <script>
 export default {};
 </script>
 
-<style scoped>
-header {
-  width: 100%;
-  text-align: center;
-  position: relative;
-  height: 120px;
-  border-bottom: 1px solid #35495e;
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Noto Sans KR", sans-serif;
+  color: #333;
 }
-header h1 {
-  position: absolute;
-  top: 0;
-  left: 100px;
-}
-header ul.menu:after {
-  display: block;
-  clear: both;
-  content: "";
-}
-header ul.menu {
-  position: absolute;
-  top: 20px;
-  right: 50px;
-}
-header ul.menu li {
-  float: left;
-  padding: 10px 20px;
+ul li {
   list-style: none;
 }
-
 a {
   text-decoration: none;
   color: #333;
+}
+html {
+  background: #111;
+}
+header {
+  background: #111;
+  border-bottom: 5px solid #ec0d17;
+}
+header h1 {
+  position: relative;
+  text-align: center;
+  font-size: 25px;
+  padding: 10px 30px;
+  font-weight: bold;
+}
+header h1 .logo {
+  position: absolute;
+  left: 10px;
+  top: 8px;
+}
+header h1 .title {
+  color: #fff;
+}
+header h1 .logo img {
+  width: 55px;
 }
 </style>

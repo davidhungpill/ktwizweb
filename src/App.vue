@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <PredictionEvent msg="Welcome to Your Vue.js App" />
     <Footer />
   </div>
   {{ phase }}
@@ -9,14 +9,14 @@
 
 <script>
 import Header from "./components/common/header"; //import 헤더 추가
-import HelloWorld from "./components/HelloWorld.vue";
+import PredictionEvent from "./components/PredictionEvent.vue";
 import Footer from "./components/common/footer"; //import 풋터 추가
 
 export default {
   name: "App",
   components: {
     Header,
-    HelloWorld,
+    PredictionEvent,
     Footer,
   },
 
