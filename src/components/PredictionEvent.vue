@@ -60,7 +60,7 @@ export default {
     submitEvent() {
       console.log("통신 테스트 1");
       axios
-        .get("http://ktwiz.api.ktds.amazonaws.com/event/apply")
+        .post("http://ktwiz.api.ktds.amazonaws.com/event/apply")
         .then((res) => {
           console.log(res); //값을 불러왔을때
         })
