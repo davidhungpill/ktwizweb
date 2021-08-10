@@ -4,7 +4,7 @@
       <a href="#" class="logo"
         ><img alt="KT Wiz" src="../../assets/logo_w.png"
       /></a>
-      <span class="title">"AI를 지켜라" 이벤트</span>
+      <span class="title">"AI를 이겨라" 이벤트</span>
     </h1>
   </header>
 </template>

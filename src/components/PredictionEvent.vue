@@ -34,8 +34,8 @@
         <div class="resultBox">
           <p class="resultStateTit">현재응모 현황</p>
           <ul class="resultList">
-            <li>예 : 3명</li>
-            <li>아니요 : 2명</li>
+            <li>예 : {{ resultData.statistic.Yes }}명</li>
+            <li>아니요 : {{ resultData.statistic.No }}명</li>
           </ul>
         </div>
       </div>
@@ -92,7 +92,7 @@ export default {
       }
       let param = {
         choice: choice,
-        id: this.mainData.id,
+        event: { id: this.mainData.id },
         userId: this.$route.query.id,
       };
       axios
