@@ -70,7 +70,7 @@ replicas: 1
 deployments:
   - spec:
       containers:
-      - image: davidhungpill/ktwizweb:latest
+      - image: davidhungpill/ktwizweb:${version}
         imagePullPolicy: Always
         name: ktwizweb
         ports:
