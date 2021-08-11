@@ -96,7 +96,7 @@ export default {
         userId: this.$route.query.id,
       };
       axios
-        .post("http://ktwiz.api.ktds.amazonaws.com/event/apply", param)
+        .post("http://ec2-3-36-248-102.ap-northeast-2.compute.amazonaws.com/event/apply", param)
         .then((res) => {
           this.resultData = res.data;
           this.eventFlag = 2;
@@ -109,7 +109,7 @@ export default {
       console.log(this.$route.query.id);
       console.log("통신 테스트 1");
       axios
-        .get("http://ktwiz.api.ktds.amazonaws.com/event/Available")
+        .get("http://ec2-3-36-248-102.ap-northeast-2.compute.amazonaws.com/event/Available")
         .then((res) => {
           console.log(res); //값을 불러왔을때
           this.mainData = res.data;
