@@ -35,7 +35,7 @@ spec:
               servicePort: http2
             {{- else }}
               serviceName: {{ .serviceName }}
-              servicePort: http
+              servicePort: 80
             {{- end }}
         {{- end }}
   {{- end }}
