@@ -28,13 +28,13 @@ spec:
       http:
         paths:
         {{- range .paths }}
-          - path: {{ . }}
+          - path: {{ .path }}
             backend:
             {{- if $istioEnabled }}
               serviceName: {{ $.Values.global.namespace }}-istio-ingressgateway
               servicePort: http2
             {{- else }}
-              serviceName: {{ $.Values.ingress.serviceName }}
+              serviceName: {{ .serviceName }}
               servicePort: http
             {{- end }}
         {{- end }}

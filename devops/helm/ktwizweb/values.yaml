@@ -135,7 +135,11 @@ ingress:
     - host: ec2-3-36-248-102.ap-northeast-2.compute.amazonaws.com
     # ktwiz.web.ktds.amazonaws.com
       paths: 
-        - /
+        - path : /
+          serviceName : ktwizweb
+        - path : /event
+          serviceName : ktwizapi
+
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
