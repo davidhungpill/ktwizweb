@@ -5,12 +5,20 @@
       <div class="predBox">
         <h2 class="predTit">kt ds AI Centro가 예측한 결과</h2>
         <ul class="predAiList">
-          <li><strong>예</strong> : <span>%</span></li>
-          <li><strong>아니요</strong> : <span>%</span></li>
+          <li>
+            <strong>예</strong> : {{ this.retrunAnswers(mainData.answers, 0)
+            }}<span>%</span>
+          </li>
+          <li>
+            <strong>아니요</strong> :
+            {{ this.retrunAnswers(mainData.answers, 1) }}<span>%</span>
+          </li>
         </ul>
-        <div id="predDetail" style="display: none">
-          {{ mainData }}
-        </div>
+        <div
+          id="predDetail"
+          style="display: none"
+          v-html="mainData.analysis"
+        ></div>
         <div class="btnMore" @click="openMore()">{{ btnMoreText }}</div>
       </div>
       <p>{{ mainData.description }}</p>
@@ -73,6 +81,12 @@ export default {
         this.btnMoreText = "자세히 보기";
       }
     },
+    retrunAnswers(data, num) {
+      if (data != null) {
+        let dataArray = data.split("_");
+        return dataArray[num];
+      }
+    },
     submitEvent() {
       let obj_length = document.getElementsByName("choice").length;
       let choice = "";
@@ -96,7 +110,10 @@ export default {
         userId: this.$route.query.id,
       };
       axios
-        .post("http://ec2-3-36-248-102.ap-northeast-2.compute.amazonaws.com/event/apply", param)
+        .post(
+          "http://ec2-3-36-248-102.ap-northeast-2.compute.amazonaws.com/event/apply",
+          param
+        )
         .then((res) => {
           this.resultData = res.data;
           this.eventFlag = 2;
@@ -109,7 +126,9 @@ export default {
       console.log(this.$route.query.id);
       console.log("통신 테스트 1");
       axios
-        .get("http://ec2-3-36-248-102.ap-northeast-2.compute.amazonaws.com/event/Available")
+        .get(
+          "http://ec2-3-36-248-102.ap-northeast-2.compute.amazonaws.com/event/Available"
+        )
         .then((res) => {
           console.log(res); //값을 불러왔을때
           this.mainData = res.data;
@@ -174,6 +193,17 @@ export default {
   padding-bottom: 20px;
   display: none;
 }
+#predDetail h3 {
+  font-size: 18px;
+  padding-bottom: 10px;
+  padding-top: 20px;
+}
+#predDetail img {
+  max-width: 100%;
+  margin: auto;
+  display: block;
+}
+
 .btnMore {
   width: 100px;
   font-size: 14px;
