@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <Header />
     <PredictionEvent msg="Welcome to Your Vue.js App" />
     <Footer />
   </div>
@@ -8,14 +7,12 @@
 </template>
 
 <script>
-import Header from "./components/common/header"; //import 헤더 추가
 import PredictionEvent from "./components/PredictionEvent.vue";
 import Footer from "./components/common/footer"; //import 풋터 추가
 
 export default {
   name: "App",
   components: {
-    Header,
     PredictionEvent,
     Footer,
   },

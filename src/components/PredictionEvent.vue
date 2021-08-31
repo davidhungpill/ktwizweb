@@ -5,13 +5,8 @@
       <div class="predBox">
         <h2 class="predTit">kt ds AI Centro가 예측한 결과</h2>
         <ul class="predAiList">
-          <li>
-            <strong>예</strong> : {{ this.retrunAnswers(mainData.answers, 0)
-            }}<span>%</span>
-          </li>
-          <li>
-            <strong>아니요</strong> :
-            {{ this.retrunAnswers(mainData.answers, 1) }}<span>%</span>
+          <li v-for="(item, index) in choicesList" v-bind:key="index">
+            <strong>{{ item }}</strong> : {{ answersList[index] }}<span>%</span>
           </li>
         </ul>
         <div
@@ -21,34 +16,55 @@
         ></div>
         <div class="btnMore" @click="openMore()">{{ btnMoreText }}</div>
       </div>
-      <p>{{ mainData.description }}</p>
-      <ul class="radioList">
-        <li>
-          <input type="radio" value="Yes" name="choice" id="choice01" />
-          <label for="choice01">예</label>
-        </li>
-        <li>
-          <input type="radio" value="No" name="choice" id="choice02" />
-          <label for="choice02">아니요</label>
-        </li>
-      </ul>
-      <div class="btnSubmit" @click="submitEvent()" v-if="this.eventFlag == 0">
-        이벤트 응모
-      </div>
-      <div v-if="this.eventFlag == 2">
-        <p class="resultTit">{{ resultData.message }}</p>
-      </div>
-      <div v-if="this.eventFlag == 2 && this.resultData.result == 'success'">
-        <div class="resultBox">
-          <p class="resultStateTit">현재응모 현황</p>
-          <ul class="resultList">
-            <li>예 : {{ resultData.statistic.Yes }}명</li>
-            <li>아니요 : {{ resultData.statistic.No }}명</li>
-          </ul>
+      <div class="choiceBox">
+        <p>{{ mainData.description }}</p>
+        <ul class="radioList">
+          <li v-for="(item, index) in choicesList" v-bind:key="index">
+            <input
+              type="radio"
+              :value="choicesList[index]"
+              name="choice"
+              :id="'choice' + index"
+            />
+            <label :for="'choice' + index">{{ choicesList[index] }}</label>
+          </li>
+        </ul>
+
+        <div
+          class="btnSubmit"
+          @click="submitEvent()"
+          v-if="this.eventFlag == 0"
+        >
+          이벤트 응모
         </div>
-      </div>
-      <div v-if="this.eventFlag == 3">
-        <p class="resultTit">kt wiz 앱에서 로그인 한 후 응모해주세요.</p>
+        <div v-if="this.eventFlag == 2">
+          <p class="resultTit">{{ resultData.message }}</p>
+        </div>
+        <div v-if="this.eventFlag == 2 && this.resultData.result == 'success'">
+          <div class="resultBox">
+            <p class="resultStateTit">현재응모 현황</p>
+            <ul class="resultList">
+              <li
+                v-for="(item, index) in choicesList"
+                v-bind:key="index"
+                :style="
+                  'width:' +
+                  (this.resultData.statistic[choicesList[index]] / this.total) *
+                    100 +
+                  '%'
+                "
+              >
+                <span
+                  >{{ choicesList[index] }} :
+                  {{ this.resultData.statistic[choicesList[index]] }}명</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div v-if="this.eventFlag == 3">
+          <p class="resultTit">kt wiz 앱에서 로그인 한 후 응모해주세요.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -65,6 +81,8 @@ export default {
       totalPages: 0,
       btnMoreText: "자세히 보기",
       mainData: {},
+      answersList: [],
+      choicesList: [],
       resultData: {},
       eventFlag: 0,
     };
@@ -79,12 +97,6 @@ export default {
       } else {
         predDetail.style.display = "none";
         this.btnMoreText = "자세히 보기";
-      }
-    },
-    retrunAnswers(data, num) {
-      if (data != null) {
-        let dataArray = data.split("_");
-        return dataArray[num];
       }
     },
     submitEvent() {
@@ -115,8 +127,15 @@ export default {
           param
         )
         .then((res) => {
+          console.log(res);
           this.resultData = res.data;
+          this.total = 0;
+          for (let i = 0; i < this.choicesList.length; i++) {
+            this.total =
+              this.total + this.resultData.statistic[this.choicesList[i]];
+          }
           this.eventFlag = 2;
+          console.log(this.total);
         })
         .catch((err) => {
           console.log(err); //통신에러가 떴을때
@@ -132,6 +151,8 @@ export default {
         .then((res) => {
           console.log(res); //값을 불러왔을때
           this.mainData = res.data;
+          this.choicesList = this.mainData.choices.split("_");
+          this.answersList = this.mainData.answers.split("_");
         })
         .catch((err) => {
           console.log(err); //통신에러가 떴을때
@@ -147,21 +168,42 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Noto Sans KR", sans-serif;
+}
+ul li {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+}
+html {
+  background: #272727;
+}
+
 .PredictionEvent {
   width: 100%;
   background: #fefefe;
+  background: url("../assets/visual_bg.jpg") no-repeat center top;
+  background-size: 100%;
+  max-width: 800px;
+  margin: auto;
 }
 .PredictionEvent .content {
-  max-width: 900px;
   margin: auto;
   padding: 10px 10px 50px;
-  min-height: 75vh;
+  padding-top: 45%;
 }
 .mainText {
-  font-size: 25px;
+  font-size: 30px;
   font-weight: bold;
   padding: 30px 10px 10px;
   text-align: center;
+  color: #fff;
 }
 .predBox {
   border: 1px solid #ccc;
@@ -169,6 +211,7 @@ export default {
   margin: 20px 0;
   border-radius: 5px;
   background: #fff;
+  color: #333;
 }
 .predTit {
   font-size: 20px;
@@ -179,6 +222,9 @@ export default {
 }
 .predAiList li {
   padding: 5px 0;
+}
+.choiceBox {
+  color: #fff;
 }
 .radioList {
   padding-bottom: 20px;
@@ -243,5 +289,21 @@ export default {
   margin: 20px 0;
   border-radius: 5px;
   background: #fff;
+  color: #000;
+}
+.resultBox ul li {
+  width: 0%;
+  margin: 10px 0;
+  height: 30px;
+  background: #eee;
+  position: relative;
+  display: block;
+  border-radius: 2px;
+}
+.resultBox ul li span {
+  min-width: 320px;
+  position: absolute;
+  top: 3px;
+  left: 10px;
 }
 </style>
