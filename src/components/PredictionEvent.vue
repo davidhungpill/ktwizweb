@@ -130,13 +130,14 @@ export default {
         .then((res) => {
           console.log(res);
           this.resultData = res.data;
-          this.total = 0;
-          for (let i = 0; i < this.choicesList.length; i++) {
-            this.total =
-              this.total + this.resultData.statistic[this.choicesList[i]];
+          if (this.resultData.result == "success") {
+            this.total = 0;
+            for (let i = 0; i < this.choicesList.length; i++) {
+              this.total =
+                this.total + this.resultData.statistic[this.choicesList[i]];
+            }
           }
           this.eventFlag = 2;
-          console.log(this.total);
         })
         .catch((err) => {
           console.log(err); //통신에러가 떴을때
