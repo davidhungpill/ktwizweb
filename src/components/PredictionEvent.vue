@@ -100,6 +100,11 @@ export default {
       }
     },
     submitEvent() {
+      if (this.$route.query.id == undefined) {
+        this.eventFlag = 3;
+        return false;
+      }
+
       let obj_length = document.getElementsByName("choice").length;
       let choice = "";
       for (var i = 0; i < obj_length; i++) {
@@ -111,11 +116,7 @@ export default {
         alert("의견을 선택해 주세요.");
         return false;
       }
-      console.log(this.$route.query.id);
-      if (this.$route.query.id == undefined) {
-        this.eventFlag = 3;
-        return false;
-      }
+
       let param = {
         choice: choice,
         event: { id: this.mainData.id },
@@ -201,7 +202,7 @@ html {
 .mainText {
   font-size: 30px;
   font-weight: bold;
-  padding: 30px 10px 10px;
+  padding: 30px 10px 0;
   text-align: center;
   color: #fff;
 }
@@ -224,6 +225,7 @@ html {
   padding: 5px 0;
 }
 .choiceBox {
+  font-size: 20px;
   color: #fff;
 }
 .radioList {
@@ -290,6 +292,7 @@ html {
   border-radius: 5px;
   background: #fff;
   color: #000;
+  font-size: 16px;
 }
 .resultBox ul li {
   width: 0%;
