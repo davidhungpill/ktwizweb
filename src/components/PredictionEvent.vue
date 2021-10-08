@@ -5,8 +5,9 @@
       <div class="predBox">
         <h2 class="predTit">kt ds AI Centro가 예측한 결과</h2>
         <ul class="predAiList">
-          <li v-for="(item, index) in choicesList" v-bind:key="index">
-            <strong>{{ item }}</strong> : {{ answersList[index] }}<span>%</span>
+          <li v-for="(item, index) in mainData.answers" v-bind:key="index">
+            <strong>{{ questions["content" + item.question] }}</strong> :
+            {{ item.answer }}
           </li>
         </ul>
         <div
@@ -16,55 +17,52 @@
         ></div>
         <div class="btnMore" @click="openMore()">{{ btnMoreText }}</div>
       </div>
-      <div class="choiceBox">
-        <p>{{ mainData.description }}</p>
+      <div
+        class="choiceBox"
+        v-for="(item, i) in mainData.questions"
+        v-bind:key="i"
+      >
+        <p :id="'content' + item.id">{{ questions["content" + item.id] }}</p>
         <ul class="radioList">
-          <li v-for="(item, index) in choicesList" v-bind:key="index">
+          <li
+            v-for="(subItem, j) in questions['choices' + item.id]"
+            v-bind:key="j"
+          >
             <input
               type="radio"
-              :value="choicesList[index]"
-              name="choice"
-              :id="'choice' + index"
+              :value="subItem"
+              :name="'choice' + item.id"
+              :id="'choice' + item.id + '_' + j"
             />
-            <label :for="'choice' + index">{{ choicesList[index] }}</label>
+            <label :for="'choice' + item.id + '_' + j">{{ subItem }}</label>
           </li>
         </ul>
-
-        <div
-          class="btnSubmit"
-          @click="submitEvent()"
-          v-if="this.eventFlag == 0"
-        >
-          이벤트 응모
-        </div>
-        <div v-if="this.eventFlag == 2">
-          <p class="resultTit">{{ resultData.message }}</p>
-        </div>
-        <div v-if="this.eventFlag == 2 && this.resultData.result == 'success'">
-          <div class="resultBox">
-            <p class="resultStateTit">현재응모 현황</p>
+      </div>
+      <div class="btnSubmit" @click="submitEvent()" v-if="this.eventFlag == 0">
+        이벤트 응모
+      </div>
+      <div v-if="this.eventFlag == 2">
+        <p class="resultTit">{{ resultData.message }}</p>
+      </div>
+      <div v-if="this.eventFlag == 2 && this.resultData.result == 'success'">
+        <div class="resultBox">
+          <p class="resultStateTit">현재응모 현황</p>
+          <div v-for="(item, i) in total" v-bind:key="i">
+            <p class="resultSubTit">{{ item.content }}</p>
             <ul class="resultList">
               <li
-                v-for="(item, index) in choicesList"
-                v-bind:key="index"
-                :style="
-                  'width:' +
-                  (this.resultData.statistic[choicesList[index]] / this.total) *
-                    100 +
-                  '%'
-                "
+                v-for="(info, j) in total[i].info"
+                v-bind:key="j"
+                :style="'width:' + (info.cnt / total[i].cnt) * 100 + '%;'"
               >
-                <span
-                  >{{ choicesList[index] }} :
-                  {{ this.resultData.statistic[choicesList[index]] }}명</span
-                >
+                <span>{{ info.choice }} : {{ info.cnt }}명</span>
               </li>
             </ul>
           </div>
         </div>
-        <div v-if="this.eventFlag == 3">
-          <p class="resultTit">kt wiz 앱에서 로그인 한 후 응모해주세요.</p>
-        </div>
+      </div>
+      <div v-if="this.eventFlag == 3">
+        <p class="resultTit">kt wiz 앱에서 로그인 한 후 응모해주세요.</p>
       </div>
     </div>
   </div>
@@ -81,10 +79,11 @@ export default {
       totalPages: 0,
       btnMoreText: "자세히 보기",
       mainData: {},
-      answersList: [],
-      choicesList: [],
+      questions: {},
+      choicesList: {},
       resultData: {},
       eventFlag: 0,
+      total: {},
     };
   },
   methods: {
@@ -104,39 +103,64 @@ export default {
         this.eventFlag = 3;
         return false;
       }
-
-      let obj_length = document.getElementsByName("choice").length;
-      let choice = "";
-      for (var i = 0; i < obj_length; i++) {
-        if (document.getElementsByName("choice")[i].checked == true) {
-          choice = document.getElementsByName("choice")[i].value;
+      console.log(this.mainData.questions.length);
+      let param = [];
+      for (let i = 0; i < this.mainData.questions.length; i++) {
+        let obj_length = document.getElementsByName(
+          "choice" + this.mainData.questions[i].id
+        ).length;
+        let question = document.getElementById(
+          "content" + this.mainData.questions[i].id
+        ).innerText;
+        let choiceObj = {
+          event: { id: this.mainData.id },
+          question: {
+            id: this.mainData.questions[i].id,
+          },
+          userId: this.$route.query.id,
+        };
+        for (let j = 0; j < obj_length; j++) {
+          if (
+            document.getElementsByName(
+              "choice" + this.mainData.questions[i].id
+            )[j].checked == true
+          ) {
+            choiceObj.choice = document.getElementsByName(
+              "choice" + this.mainData.questions[i].id
+            )[j].value;
+          }
         }
+        if (choiceObj.choice == "" || choiceObj.choice == undefined) {
+          alert("'" + question + "'의 의견을 선택해 주세요.");
+          return false;
+        }
+        param.push(choiceObj);
       }
-      if (choice == "") {
-        alert("의견을 선택해 주세요.");
-        return false;
-      }
-
-      let param = {
-        choice: choice,
-        event: { id: this.mainData.id },
-        userId: this.$route.query.id,
-      };
       axios
         .post(
           "http://ec2-3-36-248-102.ap-northeast-2.compute.amazonaws.com/event/apply",
           param
         )
         .then((res) => {
-          console.log(res);
           this.resultData = res.data;
+          this.total = {};
           if (this.resultData.result == "success") {
-            this.total = 0;
-            for (let i = 0; i < this.choicesList.length; i++) {
-              this.total =
-                this.total + this.resultData.statistic[this.choicesList[i]];
+            for (let i = 0; i < this.resultData.statistic.length; i++) {
+              let target = "question" + this.resultData.statistic[i].question;
+              if (this.total[target] == undefined) {
+                (this.total[target] = {}), (this.total[target].cnt = 0);
+                this.total[target].content =
+                  this.questions[
+                    "content" + this.resultData.statistic[i].question
+                  ];
+                this.total[target].info = [];
+              }
+              this.total[target].cnt =
+                this.total[target].cnt + this.resultData.statistic[i].cnt;
+              this.total[target].info.push(this.resultData.statistic[i]);
             }
           }
+          console.log(this.total);
           this.eventFlag = 2;
         })
         .catch((err) => {
@@ -144,22 +168,23 @@ export default {
         });
     },
     setData() {
-      console.log(this.$route.query.id);
-      console.log("통신 테스트 1");
       axios
         .get(
           "http://ec2-3-36-248-102.ap-northeast-2.compute.amazonaws.com/event/Available"
         )
         .then((res) => {
-          console.log(res); //값을 불러왔을때
           this.mainData = res.data;
-          this.choicesList = this.mainData.choices.split("_");
-          this.answersList = this.mainData.answers.split("_");
+          this.questions = {};
+          for (var i = 0; i < this.mainData.questions.length; i++) {
+            this.questions["choices" + this.mainData.questions[i].id] =
+              this.mainData.questions[i].choices.split("_");
+            this.questions["content" + this.mainData.questions[i].id] =
+              this.mainData.questions[i].content;
+          }
         })
         .catch((err) => {
           console.log(err); //통신에러가 떴을때
         });
-      console.log("통신 테스트 2");
     },
   },
   mounted() {
@@ -280,11 +305,16 @@ html {
   text-align: center;
   font-size: 22px;
   font-weight: bold;
+  color: #fff;
 }
 .resultStateTit {
-  font-size: 18px;
+  font-size: 20px;
   padding: 5px 0 5px;
   font-weight: bold;
+}
+.resultSubTit {
+  font-weight: bold;
+  padding-top: 10px;
 }
 .resultBox {
   border: 1px solid #ccc;
